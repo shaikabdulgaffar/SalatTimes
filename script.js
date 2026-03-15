@@ -44,13 +44,13 @@ function findTimingsFor(month, date) {
 }
 
 // Format functions
-function formatTimeWithSeconds(date) {
+function formatTimeParts(date) {
   const hours = date.getHours();
   const minutes = String(date.getMinutes()).padStart(2, '0');
   const seconds = String(date.getSeconds()).padStart(2, '0');
   const ampm = hours >= 12 ? 'PM' : 'AM';
   const displayHours = String(hours % 12 || 12).padStart(2, '0');
-  return `${displayHours}:${minutes}:${seconds} ${ampm}`;
+  return { numbers: `${displayHours}:${minutes}:${seconds}`, ampm };
 }
 
 function formatShortDate(date) {
@@ -109,22 +109,23 @@ function formatHijri(date) {
 // Update DOM with current time/date
 function updateCurrentTimeAndDate() {
   const now = new Date();
-  const timeStr = formatTimeWithSeconds(now);
+  const timeParts = formatTimeParts(now);
   const shortDate = formatShortDate(now);
   const cardDate = formatCardDate(now);
   const hijri = formatHijri(now);
 
-  const currentTimeEl = document.getElementById('currentTime');
+  const timeNumbersEl = document.getElementById('currentTimeNumbers');
+  const timeAMPMEl = document.getElementById('currentTimeAMPM');
   const currentDateEl = document.getElementById('currentDate');
   const cardDateEl = document.getElementById('cardDate');
   const hijriEl = document.getElementById('hijriDate');
 
-  if (currentTimeEl) currentTimeEl.textContent = timeStr;
+  if (timeNumbersEl) timeNumbersEl.textContent = timeParts.numbers;
+  if (timeAMPMEl) timeAMPMEl.textContent = timeParts.ampm;
   if (currentDateEl) currentDateEl.textContent = shortDate;
   if (cardDateEl) cardDateEl.textContent = cardDate;
   if (hijriEl) hijriEl.textContent = hijri;
 
-  // If the day changed since last check, refresh prayer times
   const todayKey = `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
   if (todayKey !== lastDateKey) {
     lastDateKey = todayKey;
@@ -170,6 +171,39 @@ function updatePrayerTimesForDate(dateObj) {
   if (getEl('sahri-time')) {
     getEl('sahri-time').textContent = timing && timing.sahri ? timing.sahri : '--:--';
   }
+}
+
+// Parse "H:MM" from timings.json into a Date on the given day (assumes maghrib times are PM)
+function parseTimeToDate(targetDate, timeStr) {
+  if (!timeStr) return null;
+  const parts = timeStr.split(':').map(s => parseInt(s, 10));
+  if (parts.length < 2 || Number.isNaN(parts[0])) return null;
+  let h = parts[0], m = parts[1] || 0;
+  if (h < 12) h += 12; // make PM
+  return new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate(), h, m, 0);
+}
+
+function getEffectiveDateForHijri(now) {
+  const monthKey = monthNames[now.getMonth()];
+  const day = now.getDate();
+  const timing = findTimingsFor(monthKey, day);
+  let maghribDate = null;
+
+  if (timing) {
+    const magStr = timing.maghrib ?? timing.magrib ?? timing.maghrib;
+    maghribDate = parseTimeToDate(now, magStr);
+  }
+
+  // fallback to 18:00 if timing not found
+  if (!maghribDate) maghribDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 18, 0, 0);
+
+  // If current time is at/after maghrib, use next Gregorian day for Hijri calculation
+  if (now >= maghribDate) {
+    const next = new Date(now);
+    next.setDate(next.getDate() + 1);
+    return next;
+  }
+  return now;
 }
 
 // Initialization

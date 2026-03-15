@@ -5,6 +5,7 @@
     <title>Kadapa Prayer Times</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -24,7 +25,10 @@
         <div class="container">
             <div class="time-date-container">
                 <div class="time-display">
-                    <div class="current-time" id="currentTime">--:--:--</div>
+                    <div class="current-time">
+                        <span id="currentTimeNumbers">--:--:--</span>
+                        <span id="currentTimeAMPM" class="ampm">--</span>
+                    </div>
                 </div>
                 <div class="date-display">
                     <div class="english-date" id="currentDate">--</div>
@@ -41,6 +45,10 @@
                 
 
                 <div class="times-grid">
+                    <div class="time-item">
+                        <div class="time-label">Sehri End</div>
+                        <div class="time-value" id="sahri-time">--:--</div>
+                    </div>
                     <div class="time-item">
                         <div class="time-label">Fajar</div>
                         <div class="time-value" id="fajar-time">--:--</div>

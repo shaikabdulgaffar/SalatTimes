@@ -82,10 +82,28 @@ html, body {
     font-size: 40px;
     font-weight: 500;
     color: var(--primary);
-    white-space: nowrap;    /* prevent AM/PM wrapping to next line */
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     font-variant-numeric: tabular-nums;
     letter-spacing: 1px;
     text-overflow: ellipsis;
+}
+
+#currentTimeNumbers { 
+    font-variant-numeric: tabular-nums; 
+    font-feature-settings: 'tnum' 1;
+    display: inline-block;
+    width: 6ch;
+}
+
+.current-time .ampm { 
+    width: 3ch;
+    display: inline-block;
+    text-align: left; 
+    color: var(--text-light); 
+    font-size: 0.65em; 
 }
 
 .date-display {
