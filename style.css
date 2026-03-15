@@ -95,7 +95,7 @@ html, body {
     font-variant-numeric: tabular-nums; 
     font-feature-settings: 'tnum' 1;
     display: inline-block;
-    width: 6ch;
+    width: 6.5ch;
 }
 
 .current-time .ampm { 
