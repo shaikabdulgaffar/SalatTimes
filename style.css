@@ -63,7 +63,7 @@ html, body {
 
 /* ============= TIME & DATE SECTION ============= */
 .time-date-section {
-    padding: 40px 0 30px;
+    padding: 10px 0 10px;
 }
 
 .time-date-container {
@@ -128,7 +128,7 @@ html, body {
 
 /* ============= PRAYER CARD ============= */
 .prayer-section {
-    padding: 0 0 60px;
+    padding: 0 0 0px;
 }
 
 .prayer-card {
